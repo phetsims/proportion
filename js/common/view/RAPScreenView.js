@@ -401,15 +401,19 @@ class RAPScreenView extends ScreenView {
    * Layout Nodes part of ethe screen viw. To accomplish, much of this was copied from ScreenView.layout, with
    * minor tweaks for this specific case. Also note Projectile Motion uses almost the exact same algorithm.
    *
-   * @param {number} width
-   * @param {number} height
+   * @param {Bounds2} viewBounds - Desired Bounds2 for the view
    * @override
    * @public
    */
-  layout( width, height ) {
+  layout( viewBounds ) {
+    assert && assert( viewBounds instanceof Bounds2, 'should be Bounds2' );
+
+    const width = viewBounds.width;
+    const height = viewBounds.height;
+
     this.resetTransform();
 
-    const scale = this.getLayoutScale( width, height );
+    const scale = this.getLayoutScale( viewBounds );
     this.setScaleMagnitude( scale );
 
     let dx = 0;
