@@ -357,7 +357,9 @@ class RAPScreenView extends ScreenView {
 
       this.antecedentRatioHalf.layout( newRatioHalfBounds, heightScalar );
       this.consequentRatioHalf.layout( newRatioHalfBounds, heightScalar );
-      backgroundNode.rectBounds = this.visibleBoundsProperty.value;
+
+      // TODO: dilated to support voicing toolbar bounds. Upon this writing, the chevron button was 27px wide, this should be changed based on the outcome of https://github.com/phetsims/joist/issues/704
+      backgroundNode.rectBounds = this.visibleBoundsProperty.value.dilatedX( 30 );
       backgroundNode.bottom = this.layoutBounds.bottom;
 
       // subtract the top and bottom rectangles from the tick marks height
