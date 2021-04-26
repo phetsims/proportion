@@ -6,7 +6,7 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-// import PreferencesConfiguration from '../../joist/js/preferences/PreferencesConfiguration.js';
+import PreferencesConfiguration from '../../joist/js/preferences/PreferencesConfiguration.js';
 import Sim from '../../joist/js/Sim.js';
 import simLauncher from '../../joist/js/simLauncher.js';
 import Tandem from '../../tandem/js/Tandem.js';
@@ -24,12 +24,15 @@ const simOptions = {
     qualityAssurance: 'Logan Bray, Steele Dalton, Megan Lai, Brooklyn Lash, Liam Mulhall, Devon Quispe, Kathryn Woessner',
     soundDesign: 'Ashton Morris'
   },
-  hasKeyboardHelpContent: true
-  // preferencesConfiguration: new PreferencesConfiguration( {
-  //   audioOptions: {
-  //     supportsVoicing: true
-  //   }
-  // } )
+  hasKeyboardHelpContent: true,
+  preferencesConfiguration: new PreferencesConfiguration( {
+    audioOptions: {
+      supportsVoicing: true
+    },
+    visualOptions: {
+      supportsInteractiveHighlights: true
+    }
+  } )
 };
 
 // launch the sim - beware that scenery Image nodes created outside of simLauncher.launch() will have zero bounds

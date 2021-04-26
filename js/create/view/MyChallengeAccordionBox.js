@@ -64,6 +64,20 @@ class MyChallengeAccordionBox extends AccordionBox {
         mouseAreaYDilation: 5
       },
 
+      // voicing
+      // TODO: this doesn't work because a sub component of the AccordionBox gets focus instead of the A-box itself. https://github.com/phetsims/ratio-and-proportion/issues/381
+      voicingCreateObjectResponse: event => {
+        if ( event.type === 'focus' ) {
+        return ratioAndProportionStrings.myChallenge;
+        }
+      },
+      voicingCreateHintResponse: event => {
+        if ( event.type === 'focus' ) {
+          return ratioAndProportionStrings.a11y.create.myChallengeHintText;
+        }
+      },
+
+
       // phet-io
       tandem: Tandem.REQUIRED
     }, options );
@@ -151,11 +165,20 @@ class MyChallengeAccordionBox extends AccordionBox {
     this.expandedProperty.value = DEFAULT_EXPANDED;
 
     const accordionBoxUtterance = new ActivationUtterance();
+    const accordionBoxVoicingUtterance = new ActivationUtterance();
     this.expandedProperty.lazyLink( expanded => {
-      accordionBoxUtterance.alert = expanded ?
-                                    ratioDescriber.getCurrentChallengeSentence( targetAntecedentProperty.value, targetConsequentProperty.value ) :
-                                    ratioAndProportionStrings.a11y.ratio.currentChallengeHidden;
+
+      if ( expanded ) {
+        accordionBoxUtterance.alert = ratioDescriber.getCurrentChallengeSentence( targetAntecedentProperty.value, targetConsequentProperty.value );
+        accordionBoxVoicingUtterance.alert = ratioDescriber.getMyChallengeSentence( targetAntecedentProperty.value, targetConsequentProperty.value );
+      }
+      else {
+        accordionBoxUtterance.alert = ratioAndProportionStrings.a11y.ratio.currentChallengeHidden;
+        accordionBoxVoicingUtterance.alert = ratioAndProportionStrings.a11y.ratio.myChallengeHidden;
+      }
+
       phet.joist.sim.utteranceQueue.addToBack( accordionBoxUtterance );
+      phet.joist.sim.voicingUtteranceQueue && phet.joist.sim.voicingUtteranceQueue.addToBack( accordionBoxVoicingUtterance );
     } );
 
     Property.multilink( [ targetAntecedentProperty, targetConsequentProperty ], ( targetAntecedent, targetConsequent ) => {

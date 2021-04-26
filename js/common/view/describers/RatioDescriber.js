@@ -142,6 +142,19 @@ class RatioDescriber {
    * @param {number} consequent
    * @returns {string}
    */
+  getMyChallengeSentence( antecedent, consequent ) {
+    return StringUtils.fillIn( ratioAndProportionStrings.a11y.ratio.myChallenge, {
+      targetAntecedent: antecedent,
+      targetConsequent: consequent
+    } );
+  }
+
+  /**
+   * @public
+   * @param {number} antecedent
+   * @param {number} consequent
+   * @returns {string}
+   */
   getTargetRatioChangeAlert( antecedent, consequent ) {
     return StringUtils.fillIn( ratioAndProportionStrings.a11y.ratio.targetRatioChangedContextResponse, {
       proximityToRatio: this.getProximityToNewChallengeRatioSentence(),
