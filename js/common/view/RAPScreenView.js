@@ -439,6 +439,33 @@ class RAPScreenView extends ScreenView {
     this.inProportionSoundGenerator.step( dt );
     this.staccatoFrequencySoundGenerator.step( dt );
   }
+
+  /**
+   * To support voicing.
+   * @override
+   * @public
+   */
+  getVoicingOverviewContent() {
+    return 'This has not been implemented yet';
+  }
+
+  /**
+   * To support voicing.
+   * @override
+   * @public
+   */
+  getVoicingDetailsContent() {
+    return 'This has not been implemented yet';
+  }
+
+  /**
+   * To support voicing.
+   * @override
+   * @public
+   */
+  getVoicingHintContent() {
+    return 'This has not been implemented yet';
+  }
 }
 
 ratioAndProportion.register( 'RAPScreenView', RAPScreenView );
