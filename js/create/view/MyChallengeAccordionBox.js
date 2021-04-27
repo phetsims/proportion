@@ -64,20 +64,6 @@ class MyChallengeAccordionBox extends AccordionBox {
         mouseAreaYDilation: 5
       },
 
-      // voicing
-      // TODO: this doesn't work because a sub component of the AccordionBox gets focus instead of the A-box itself. https://github.com/phetsims/ratio-and-proportion/issues/381
-      voicingCreateObjectResponse: event => {
-        if ( event.type === 'focus' ) {
-        return ratioAndProportionStrings.myChallenge;
-        }
-      },
-      voicingCreateHintResponse: event => {
-        if ( event.type === 'focus' ) {
-          return ratioAndProportionStrings.a11y.create.myChallengeHintText;
-        }
-      },
-
-
       // phet-io
       tandem: Tandem.REQUIRED
     }, options );
