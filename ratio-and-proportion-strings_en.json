@@ -389,7 +389,10 @@
       "myChallengeHelpText": {
         "value": "Set left and right values to create your challenge, then move hands to explore it."
       },
-      "myChallengeHintText": {
+      "myChallengeExpandedHintText": {
+        "value": "Set left and right values to create your challenge."
+      },
+      "myChallengeCollapsedHintText": {
         "value": "Expand to set your challenge."
       },
       "bothHandsGestureDescriptionHelpText": {
@@ -529,10 +532,10 @@
         "value": "Current challenge hidden."
       },
       "myChallenge": {
-        "value": "My challenge {{targetAntecedent}} to {{targetConsequent}}."
+        "value": "My Challenge {{targetAntecedent}} to {{targetConsequent}}."
       },
       "myChallengeHidden": {
-        "value": "My challenge hidden."
+        "value": "My Challenge hidden."
       },
       "capitalized": {
         "at": {

@@ -14,6 +14,7 @@ import merge from '../../../../phet-core/js/merge.js';
 import Fraction from '../../../../phetcommon/js/model/Fraction.js';
 import NumberPicker from '../../../../scenery-phet/js/NumberPicker.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
+import voicingManager from '../../../../scenery/js/accessibility/speaker/voicingManager.js';
 import HBox from '../../../../scenery/js/nodes/HBox.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import RichText from '../../../../scenery/js/nodes/RichText.js';
@@ -61,7 +62,36 @@ class MyChallengeAccordionBox extends AccordionBox {
         touchAreaXDilation: 15,
         touchAreaYDilation: 15,
         mouseAreaXDilation: 5,
-        mouseAreaYDilation: 5
+        mouseAreaYDilation: 5,
+
+        voicingCreateObjectResponse: event => {
+          if ( event.type === 'focus' ) {
+            return ratioAndProportionStrings.myChallenge;
+          }
+        },
+        voicingCreateContextResponse: event => {
+          if ( event.type === 'focus' ) {
+
+            if ( voicingManager.objectChangesProperty.value ) {
+              const fullContextSentence = ratioDescriber.getMyChallengeSentence( targetAntecedentProperty.value, targetConsequentProperty.value );
+
+              // TODO: we don't have to do this once there is a better way to provide a call to collapseResponses from options.
+              assert && assert( fullContextSentence.startsWith( ratioAndProportionStrings.myChallenge ), 'assuming this starts with this string' );
+
+              return this.expandedProperty.value ? fullContextSentence.replace( ratioAndProportionStrings.myChallenge, '' ) : null;
+            }
+            else {
+              return null;
+            }
+          }
+        },
+        voicingCreateHintResponse: event => {
+          if ( event.type === 'focus' ) {
+            return this.expandedProperty.value ?
+                   ratioAndProportionStrings.a11y.create.myChallengeExpandedHintText :
+                   ratioAndProportionStrings.a11y.create.myChallengeCollapsedHintText;
+          }
+        }
       },
 
       // phet-io
@@ -156,11 +186,24 @@ class MyChallengeAccordionBox extends AccordionBox {
 
       if ( expanded ) {
         accordionBoxUtterance.alert = ratioDescriber.getCurrentChallengeSentence( targetAntecedentProperty.value, targetConsequentProperty.value );
-        accordionBoxVoicingUtterance.alert = ratioDescriber.getMyChallengeSentence( targetAntecedentProperty.value, targetConsequentProperty.value );
+
+
+        accordionBoxVoicingUtterance.alert = voicingManager.collectResponses( {
+          objectResponse: ratioAndProportionStrings.myChallenge,
+          contextResponse: ratioDescriber.getMyChallengeSentence( targetAntecedentProperty.value, targetConsequentProperty.value ),
+          interactionHint: ratioAndProportionStrings.a11y.create.myChallengeExpandedHintText,
+          contextIncludesObjectResponse: true
+        } );
       }
       else {
         accordionBoxUtterance.alert = ratioAndProportionStrings.a11y.ratio.currentChallengeHidden;
-        accordionBoxVoicingUtterance.alert = ratioAndProportionStrings.a11y.ratio.myChallengeHidden;
+        accordionBoxVoicingUtterance.alert =
+          voicingManager.collectResponses( {
+            objectResponse: ratioAndProportionStrings.myChallenge,
+            contextResponse: ratioAndProportionStrings.a11y.ratio.myChallengeHidden,
+            interactionHint: ratioAndProportionStrings.a11y.create.myChallengeCollapsedHintText,
+            contextIncludesObjectResponse: true
+          } );
       }
 
       phet.joist.sim.utteranceQueue.addToBack( accordionBoxUtterance );
