@@ -13,6 +13,7 @@ import Path from '../../../../scenery/js/nodes/Path.js';
 import RectangularRadioButtonGroup from '../../../../sun/js/buttons/RectangularRadioButtonGroup.js';
 import FontAwesomeNode from '../../../../sun/js/FontAwesomeNode.js';
 import ActivationUtterance from '../../../../utterance-queue/js/ActivationUtterance.js';
+import VoicingUtterance from '../../../../utterance-queue/js/VoicingUtterance.js';
 import ratioAndProportion from '../../ratioAndProportion.js';
 import ratioAndProportionStrings from '../../ratioAndProportionStrings.js';
 import TickMarkView from './TickMarkView.js';
@@ -80,7 +81,12 @@ class TickMarkViewRadioButtonGroup extends RectangularRadioButtonGroup {
       options );
 
     const tickMarkContextResponseUtterance = new ActivationUtterance();
-    const tickMarkVoicingContextResponseUtterance = new ActivationUtterance();
+    const tickMarkVoicingContextResponseUtterance = new VoicingUtterance( {
+
+      // The object response for keyboard is handled by the focus event, so don't cancel that (which occurs before
+      // this in the listener order).
+      cancelOther: false
+    } );
     tickMarkViewProperty.lazyLink( tickMarkView => {
 
       const currentRadioButtonItem = _.find( radioButtonItemData, item => item.value === tickMarkView );
@@ -88,11 +94,7 @@ class TickMarkViewRadioButtonGroup extends RectangularRadioButtonGroup {
 
       // voicing alert
       tickMarkVoicingContextResponseUtterance.alert = voicingManager.collectResponses( {
-        objectResponse: currentRadioButtonItem.labelContent,
-        contextResponse: currentRadioButtonItem.voicingContextResponse,
-
-        // Context response includes objectResponse if both object and context are delivered
-        contextIncludesObjectResponse: voicingManager.objectChangesProperty.value && voicingManager.contextChangesProperty.value
+        contextResponse: currentRadioButtonItem.voicingContextResponse
       } );
       phet.joist.sim.voicingUtteranceQueue.addToBack( tickMarkVoicingContextResponseUtterance );
 
