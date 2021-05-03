@@ -165,13 +165,19 @@
         "value": "Numbered Tick Marks"
       },
       "tickMarksHidden": {
-        "value": "Tick Marks hidden."
+        "value": "Tick marks hidden."
       },
       "tickMarksShown": {
         "value": "Evenly-spaced horizontal lines added to Play Area."
       },
+      "voicingTickMarksShown": {
+        "value": "Evenly-spaced horizontal tick marks added."
+      },
       "numberedTickMarksShown": {
         "value": "Evenly-spaced numbered lines added to Play Area."
+      },
+      "voicingNumberedTickMarksShown": {
+        "value": "Evenly-spaced numbered tick marks added."
       },
       "relative": {
         "around": {

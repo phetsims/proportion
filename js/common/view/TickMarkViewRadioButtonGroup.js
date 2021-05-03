@@ -8,6 +8,7 @@
 
 import merge from '../../../../phet-core/js/merge.js';
 import ParallelDOM from '../../../../scenery/js/accessibility/pdom/ParallelDOM.js';
+import voicingManager from '../../../../scenery/js/accessibility/speaker/voicingManager.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
 import RectangularRadioButtonGroup from '../../../../sun/js/buttons/RectangularRadioButtonGroup.js';
 import FontAwesomeNode from '../../../../sun/js/FontAwesomeNode.js';
@@ -38,42 +39,65 @@ class TickMarkViewRadioButtonGroup extends RectangularRadioButtonGroup {
       helpTextBehavior: ParallelDOM.HELP_TEXT_BEFORE_CONTENT
     }, options );
 
-    super( tickMarkViewProperty, [ {
-        node: new FontAwesomeNode( 'eye_close', { scale: 0.8 } ),
-        value: TickMarkView.NONE,
-        labelContent: ratioAndProportionStrings.a11y.tickMark.showNo,
-        tandemName: 'showNoRadioButton'
-      }, {
-        node: new TickMarksIconPath(),
-        value: TickMarkView.VISIBLE,
-        labelContent: ratioAndProportionStrings.a11y.tickMark.show,
-        tandemName: 'showRadioButton'
-      }, {
-        node: new NumberedTickMarksIconPath(),
-        value: TickMarkView.VISIBLE_WITH_UNITS,
-        labelContent: ratioAndProportionStrings.a11y.tickMark.showNumbered,
-        tandemName: 'showNumberedRadioButton'
-      } ],
+    const radioButtonItemData = [ {
+      node: new FontAwesomeNode( 'eye_close', { scale: 0.8 } ),
+      value: TickMarkView.NONE,
+
+      interactiveDescriptionContextResponse: ratioAndProportionStrings.a11y.tickMark.tickMarksHidden,
+      voicingContextResponse: ratioAndProportionStrings.a11y.tickMark.tickMarksHidden,
+
+      // pdom
+      labelContent: ratioAndProportionStrings.a11y.tickMark.showNo,
+
+      // phet-io
+      tandemName: 'showNoRadioButton'
+    }, {
+      node: new TickMarksIconPath(),
+      value: TickMarkView.VISIBLE,
+
+      interactiveDescriptionContextResponse: ratioAndProportionStrings.a11y.tickMark.tickMarksShown,
+      voicingContextResponse: ratioAndProportionStrings.a11y.tickMark.voicingTickMarksShown,
+
+      // pdom
+      labelContent: ratioAndProportionStrings.a11y.tickMark.show,
+
+      // phet-io
+      tandemName: 'showRadioButton'
+    }, {
+      node: new NumberedTickMarksIconPath(),
+      value: TickMarkView.VISIBLE_WITH_UNITS,
+
+      interactiveDescriptionContextResponse: ratioAndProportionStrings.a11y.tickMark.numberedTickMarksShown,
+      voicingContextResponse: ratioAndProportionStrings.a11y.tickMark.voicingNumberedTickMarksShown,
+
+      // pdom
+      labelContent: ratioAndProportionStrings.a11y.tickMark.showNumbered,
+
+      // phet-io
+      tandemName: 'showNumberedRadioButton'
+    } ];
+    super( tickMarkViewProperty, radioButtonItemData,
       options );
 
     const tickMarkContextResponseUtterance = new ActivationUtterance();
+    const tickMarkVoicingContextResponseUtterance = new ActivationUtterance();
     tickMarkViewProperty.lazyLink( tickMarkView => {
 
-      switch( tickMarkView ) {
-        case TickMarkView.NONE:
-          tickMarkContextResponseUtterance.alert = ratioAndProportionStrings.a11y.tickMark.tickMarksHidden;
-          break;
-        case TickMarkView.VISIBLE:
-          tickMarkContextResponseUtterance.alert = ratioAndProportionStrings.a11y.tickMark.tickMarksShown;
-          break;
+      const currentRadioButtonItem = _.find( radioButtonItemData, item => item.value === tickMarkView );
+      assert && assert( currentRadioButtonItem, 'radio button item expected' );
 
-        case TickMarkView.VISIBLE_WITH_UNITS:
-          tickMarkContextResponseUtterance.alert = ratioAndProportionStrings.a11y.tickMark.numberedTickMarksShown;
-          break;
-        default:
-          assert && assert( false, 'unsupported tickMarkView' );
-      }
+      // voicing alert
+      tickMarkVoicingContextResponseUtterance.alert = voicingManager.collectResponses( {
+        objectResponse: currentRadioButtonItem.labelContent,
+        contextResponse: currentRadioButtonItem.voicingContextResponse,
 
+        // Context response includes objectResponse if both object and context are delivered
+        contextIncludesObjectResponse: voicingManager.objectChangesProperty.value && voicingManager.contextChangesProperty.value
+      } );
+      phet.joist.sim.voicingUtteranceQueue.addToBack( tickMarkVoicingContextResponseUtterance );
+
+      // interactive description alert
+      tickMarkContextResponseUtterance.alert = currentRadioButtonItem.interactiveDescriptionContextResponse;
       phet.joist.sim.utteranceQueue.addToBack( tickMarkContextResponseUtterance );
     } );
   }
