@@ -9,7 +9,7 @@
 import Utils from '../../../../../dot/js/Utils.js';
 import ratioAndProportion from '../../../ratioAndProportion.js';
 import ratioAndProportionStrings from '../../../ratioAndProportionStrings.js';
-import RAPConstants from '../../RAPConstants.js';
+import rapConstants from '../../rapConstants.js';
 import TickMarkView from '../TickMarkView.js';
 
 // constants
@@ -49,7 +49,7 @@ const ORDINAL_TICK_MARKS = [
 // The value in which up to and including this value, the relative description will apply to the value of the tick mark
 // rounded down, instead of up, from this remainder.
 const ROUND_DOWN_THRESHOLD = 0.7;
-const TOTAL_RANGE = RAPConstants.TOTAL_RATIO_TERM_VALUE_RANGE;
+const TOTAL_RANGE = rapConstants.TOTAL_RATIO_TERM_VALUE_RANGE;
 
 class TickMarkDescriber {
 
@@ -75,17 +75,17 @@ class TickMarkDescriber {
   getRelativePositionAndTickMarkNumberForPosition( handPosition ) {
     assert && assert( TOTAL_RANGE.contains( handPosition ) );
 
-    const normalized = TOTAL_RANGE.getNormalizedValue( handPosition );
+    // account for javascript rounding error, don't use rapConstants because we only want to handle rounding trouble.
+    const normalized = Utils.toFixedNumber( TOTAL_RANGE.getNormalizedValue( handPosition ), 9 );
     const numberOfTickMarks = this.tickMarkRangeProperty.value;
 
     // account for javascript rounding error
     const expandedValue = normalized * numberOfTickMarks;
 
-    // account for javascript rounding error
     let remainder = expandedValue % 1;
 
-    if ( Utils.toFixedNumber( remainder, 2 ) === RAPConstants.toFixed( remainder ) ) { // eslint-disable-line bad-sim-text
-      remainder = RAPConstants.toFixed( remainder ); // eslint-disable-line bad-sim-text
+    if ( Utils.toFixedNumber( remainder, 2 ) === rapConstants.toFixed( remainder ) ) { // eslint-disable-line bad-sim-text
+      remainder = rapConstants.toFixed( remainder ); // eslint-disable-line bad-sim-text
     }
 
 
