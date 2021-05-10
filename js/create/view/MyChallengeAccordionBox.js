@@ -64,7 +64,7 @@ class MyChallengeAccordionBox extends AccordionBox {
         mouseAreaYDilation: 5,
 
         // voicing
-        voicingObjectResponse: ratioAndProportionStrings.myChallenge
+        voicingNameResponse: ratioAndProportionStrings.myChallenge
       },
 
       // phet-io
