@@ -9,6 +9,7 @@
 import merge from '../../../../phet-core/js/merge.js';
 import ParallelDOM from '../../../../scenery/js/accessibility/pdom/ParallelDOM.js';
 import voicingManager from '../../../../scenery/js/accessibility/speaker/voicingManager.js';
+import voicingUtteranceQueue from '../../../../scenery/js/accessibility/speaker/voicingUtteranceQueue.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
 import RectangularRadioButtonGroup from '../../../../sun/js/buttons/RectangularRadioButtonGroup.js';
 import FontAwesomeNode from '../../../../sun/js/FontAwesomeNode.js';
@@ -96,7 +97,7 @@ class TickMarkViewRadioButtonGroup extends RectangularRadioButtonGroup {
       tickMarkVoicingContextResponseUtterance.alert = voicingManager.collectResponses( {
         contextResponse: currentRadioButtonItem.voicingContextResponse
       } );
-      phet.joist.sim.voicingUtteranceQueue.addToBack( tickMarkVoicingContextResponseUtterance );
+      voicingUtteranceQueue.addToBack( tickMarkVoicingContextResponseUtterance );
 
       // interactive description alert
       tickMarkContextResponseUtterance.alert = currentRadioButtonItem.interactiveDescriptionContextResponse;
