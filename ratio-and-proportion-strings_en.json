@@ -540,8 +540,14 @@
       "myChallenge": {
         "value": "My Challenge {{targetAntecedent}} to {{targetConsequent}}."
       },
+      "antecedentToConsequentPattern": {
+        "value": "{{targetAntecedent}} to {{targetConsequent}}"
+      },
       "myChallengeHidden": {
         "value": "My Challenge hidden."
+      },
+      "hidden": {
+        "value": "hidden"
       },
       "capitalized": {
         "at": {

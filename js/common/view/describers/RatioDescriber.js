@@ -150,6 +150,22 @@ class RatioDescriber {
   }
 
   /**
+   * Get a description fragment describing the antecedent value to the consequent value,
+   * something like:
+   * "1 to 2"
+   * @public
+   *
+   * @param {number} antecedent
+   * @param {number} consequent
+   */
+  getAntecedentToConsequentFragnemt( antecedent, consequent ) {
+    return StringUtils.fillIn( ratioAndProportionStrings.a11y.ratio.antecedentToConsequentPattern, {
+      targetAntecedent: antecedent,
+      targetConsequent: consequent
+    } );
+  }
+
+  /**
    * @public
    * @param {number} antecedent
    * @param {number} consequent

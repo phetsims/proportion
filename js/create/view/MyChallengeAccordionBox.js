@@ -155,33 +155,34 @@ class MyChallengeAccordionBox extends AccordionBox {
 
     const accordionBoxUtterance = new ActivationUtterance();
     const accordionBoxVoicingUtterance = new ActivationUtterance();
-    this.expandedProperty.lazyLink( expanded => {
+    this.expandedProperty.link( ( expanded, oldValue ) => {
 
       // strings containing responses used for Voicing
-      let contextResponse = '';
+      let objectResponse = '';
       let hintResponse = '';
 
       if ( expanded ) {
-        contextResponse = ratioDescriber.getCurrentChallengeSentence( targetAntecedentProperty.value, targetConsequentProperty.value );
+        objectResponse = ratioDescriber.getAntecedentToConsequentFragnemt( targetAntecedentProperty.value, targetConsequentProperty.value );
         hintResponse = ratioAndProportionStrings.a11y.create.myChallengeExpandedHintText;
 
         accordionBoxUtterance.alert = ratioDescriber.getCurrentChallengeSentence( targetAntecedentProperty.value, targetConsequentProperty.value );
       }
       else {
-        contextResponse = ratioAndProportionStrings.a11y.ratio.currentChallengeHidden;
+        objectResponse = ratioAndProportionStrings.a11y.ratio.hidden;
         hintResponse = ratioAndProportionStrings.a11y.create.myChallengeCollapsedHintText;
 
         accordionBoxUtterance.alert = ratioAndProportionStrings.a11y.ratio.currentChallengeHidden;
       }
 
       this.setButtonVoicingOptions( {
-        voicingContextResponse: contextResponse,
+        voicingObjectResponse: objectResponse,
         voicingHintResponse: hintResponse
       } );
 
-      this.voicingSpeakButtonResponse( { utterance: accordionBoxVoicingUtterance } );
-      phet.joist.sim.utteranceQueue.addToBack( accordionBoxUtterance );
-
+      if ( oldValue !== null ) {
+        this.voicingSpeakButtonResponse( { utterance: accordionBoxVoicingUtterance } );
+        phet.joist.sim.utteranceQueue.addToBack( accordionBoxUtterance );
+      }
     } );
 
     Property.multilink( [ targetAntecedentProperty, targetConsequentProperty ], ( targetAntecedent, targetConsequent ) => {
