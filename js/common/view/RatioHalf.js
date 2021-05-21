@@ -21,9 +21,11 @@ import merge from '../../../../phet-core/js/merge.js';
 import required from '../../../../phet-core/js/required.js';
 import StringUtils from '../../../../phetcommon/js/util/StringUtils.js';
 import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
+import Voicing from '../../../../scenery/js/accessibility/voicing/Voicing.js';
 import DragListener from '../../../../scenery/js/listeners/DragListener.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
+import VoicingUtterance from '../../../../utterance-queue/js/VoicingUtterance.js';
 import ratioAndProportion from '../../ratioAndProportion.js';
 import ratioAndProportionStrings from '../../ratioAndProportionStrings.js';
 import RatioTerm from '../model/RatioTerm.js';
@@ -126,6 +128,9 @@ class RatioHalf extends Rectangle {
       // {Property.<boolean>} - is the model in proportion right now
       inProportionProperty: required( config.inProportionProperty ),
 
+      // {string} - optional for description, but the current voicing implementation depends on having an accessibleName set
+      accessibleName: required( config.accessibleName ),
+
       // ---- OPTIONAL -------------------------------------------------
 
       // {boolean} right ratio or the left ratio
@@ -150,6 +155,8 @@ class RatioHalf extends Rectangle {
     }, config );
 
     super( 0, 0, config.bounds.width, config.bounds.height );
+
+    this.initializeVoicing();
 
     // @public (read-only) - the height of the framing rectangles, updated in layout function
     this.framingRectangleHeight = MIN_FRAMING_RECTANGLE_HEIGHT;
@@ -284,6 +291,8 @@ class RatioHalf extends Rectangle {
 
         config.setJumpingOverProportionShouldTriggerSound( true );
         viewSounds.boundarySoundClip.onStartInteraction();
+
+        this.voicingSpeakNameResponse();
       },
       drag: () => {
         this.isBeingInteractedWithProperty.value = true;
@@ -341,6 +350,7 @@ class RatioHalf extends Rectangle {
       focus: () => {
         config.cueArrowsState.keyboardFocusedProperty.value = true;
         viewSounds.grabSoundClip.play();
+        this.voicingSpeakNameResponse();
       },
       blur: () => {
         config.cueArrowsState.keyboardFocusedProperty.value = false;
@@ -367,7 +377,23 @@ class RatioHalf extends Rectangle {
     };
     positionProperty.link( updatePointer );
 
+    const voicingUtterance = new VoicingUtterance();
+    const updateVoicing = () => {
+      this.isBeingInteractedWithProperty.value && this.voicingSpeakResponse( {
+
+        // TODO: Duplicated with description options, https://github.com/phetsims/ratio-and-proportion/issues/388
+        objectResponse: config.ratioLockedProperty.value ? config.ratioDescriber.getProximityToChallengeRatio() :
+                        config.ratioDescriber.getProximityToChallengeRatio(),
+        contextResponse: this.getSingleHandContextResponse(),
+        utterance: voicingUtterance
+      } );
+
+    };
+    config.ratioTupleProperty.lazyLink( updateVoicing );
+
     this.mutate( config );
+
+    this.voicingNameResponse = this.accessibleName;
 
     assert && assert( !config.children, 'RatioHalf sets its own children.' );
     this.children = [
@@ -472,6 +498,8 @@ class RatioHalf extends Rectangle {
     this.resetRatioHalf();
   }
 }
+
+Voicing.compose( RatioHalf );
 
 ratioAndProportion.register( 'RatioHalf', RatioHalf );
 export default RatioHalf;

@@ -13,9 +13,11 @@ import merge from '../../../../phet-core/js/merge.js';
 import required from '../../../../phet-core/js/required.js';
 import sceneryPhetStrings from '../../../../scenery-phet/js/sceneryPhetStrings.js';
 import ParallelDOM from '../../../../scenery/js/accessibility/pdom/ParallelDOM.js';
+import Voicing from '../../../../scenery/js/accessibility/voicing/Voicing.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import AriaHerald from '../../../../utterance-queue/js/AriaHerald.js';
 import Utterance from '../../../../utterance-queue/js/Utterance.js';
+import VoicingUtterance from '../../../../utterance-queue/js/VoicingUtterance.js';
 import ratioAndProportion from '../../ratioAndProportion.js';
 import ratioAndProportionStrings from '../../ratioAndProportionStrings.js';
 import BothHandsInteractionListener from './BothHandsInteractionListener.js';
@@ -100,6 +102,8 @@ class BothHandsPDOMNode extends Node {
 
     super();
 
+    this.initializeVoicing();
+
     if ( phet.joist.sim.supportsGestureDescription && config.gestureDescriptionHelpText ) {
       config.interactiveNodeOptions.helpText = config.gestureDescriptionHelpText;
     }
@@ -174,6 +178,9 @@ class BothHandsPDOMNode extends Node {
         this.alertBothHandsObjectResponse( true );
         this.viewSounds.grabSoundClip.play();
         this.bothHandsFocusedProperty.value = true;
+
+        this.voicingSpeakNameResponse();
+
       },
       blur: () => {
         this.viewSounds.releaseSoundClip.play();
@@ -217,6 +224,8 @@ class BothHandsPDOMNode extends Node {
     // @public (read-only) - expose this from the listener for general consumption
     this.isBeingInteractedWithProperty = this.bothHandsInteractionListener.isBeingInteractedWithProperty;
 
+    const voicingUtterance = new VoicingUtterance();
+
     // Though most cases are covered by just listening to fitness, there are certain cases when Property values can change,
     // but the fitness doesn't. See https://github.com/phetsims/ratio-and-proportion/issues/222 as an example.
     Property.multilink( [
@@ -230,6 +239,12 @@ class BothHandsPDOMNode extends Node {
 
       if ( this.bothHandsInteractionListener.isBeingInteractedWithProperty.value ) {
         this.alertBothHandsObjectResponse();
+
+        this.voicingSpeakResponse( {
+          objectResponse: this.bothHandsDescriber.getBothHandsObjectResponse(), // TODO: Duplicated https://github.com/phetsims/ratio-and-proportion/issues/388
+          contextResponse: this.bothHandsDescriber.getBothHandsContextResponse(),
+          utterance: voicingUtterance
+        } );
       }
     } );
 
@@ -241,6 +256,7 @@ class BothHandsPDOMNode extends Node {
     } );
 
     this.mutate( config );
+    this.voicingNameResponse = 'Both Hands'; // TODO: not sure about this one https://github.com/phetsims/ratio-and-proportion/issues/388
   }
 
   /**
@@ -279,6 +295,8 @@ class BothHandsPDOMNode extends Node {
     phet.joist.sim.utteranceQueue.addToBack( this.contextResponseUtterance );
   }
 }
+
+Voicing.compose( BothHandsPDOMNode );
 
 ratioAndProportion.register( 'BothHandsPDOMNode', BothHandsPDOMNode );
 export default BothHandsPDOMNode;
