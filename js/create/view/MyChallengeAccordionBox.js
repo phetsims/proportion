@@ -174,13 +174,11 @@ class MyChallengeAccordionBox extends AccordionBox {
         accordionBoxUtterance.alert = ratioAndProportionStrings.a11y.ratio.currentChallengeHidden;
       }
 
-      this.setButtonVoicingOptions( {
-        voicingObjectResponse: objectResponse,
-        voicingHintResponse: hintResponse
-      } );
+      this.voicingObjectResponse = objectResponse;
+      this.voicingHintResponse = hintResponse;
 
       if ( oldValue !== null ) {
-        this.voicingSpeakButtonResponse( { utterance: accordionBoxVoicingUtterance } );
+        this.voicingSpeakResponse( { utterance: accordionBoxVoicingUtterance } );
         phet.joist.sim.utteranceQueue.addToBack( accordionBoxUtterance );
       }
     } );
